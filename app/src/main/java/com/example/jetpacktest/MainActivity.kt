@@ -25,14 +25,14 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, MainViewModelFactory(countReserved)).get(MainViewModel::class.java)
 
         plusOneBtn.setOnClickListener{
-            viewModel.counter++;
-            refreshCounter()
+            viewModel.plusOne()
         }
 
         clearBtn.setOnClickListener {
-            viewModel.counter = 0;
-            refreshCounter()
+            viewModel.clear()
         }
+
+        lifecycle.addObserver(MyObserver())
 
         refreshCounter()
     }
@@ -44,6 +44,6 @@ class MainActivity : AppCompatActivity() {
     //不管程序是退出还是放在后台，都能保存当前值
     override fun onPause() {
         super.onPause()
-        sp.edit { putInt("count_reserved", viewModel.counter) }
+        sp.edit { putInt("count_reserved", viewModel.counter.value ?: 0) }
     }
 }
